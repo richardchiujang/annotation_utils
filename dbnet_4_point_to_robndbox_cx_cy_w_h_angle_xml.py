@@ -210,7 +210,7 @@ if __name__ == '__main__':
     print(files_path)
     # txt_file = 'test/presentation_032.txt'
     for txt_file in files_path:
-        fourp_gen_xml(txt_file)
+        fourp_gen_xml(txt_file) 
 
 
 

@@ -66,9 +66,9 @@ if __name__ == '__main__':
             os.remove(f)
         print('clear files in img_with_gt folder ready.')
 
-    base_path = 'C:/application/Develop/datasets/'
+    base_path = r'C:/application\Develop/annotation_utils/preprocess_dataset/datasets_mix/datasets/' #'C:/application/Develop/datasets/'
     list_file = 'train.txt'
-    f = open(base_path + list_file, 'r')
+    f = open(base_path + list_file, 'r', encoding='utf-8')
     file_pair = f.readlines()
     f.close()
     for s in tqdm.tqdm(file_pair):

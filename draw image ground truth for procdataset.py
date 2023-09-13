@@ -30,7 +30,8 @@ def show_img(imgs: np.ndarray, file_name):
 
 def draw_bbox(img_path, result, color=(0, 0, 255), thickness=2):
     if isinstance(img_path, str):
-        img = cv2.imread(img_path)
+        # img = cv2.imread(img_path)
+        img = cv2.imdecode(np.fromfile(img_path, dtype=np.uint8), cv2.IMREAD_UNCHANGED)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     draw_img = img.copy()
     for point in result:
@@ -64,7 +65,7 @@ if __name__ == '__main__':
             os.remove(f)
         print('clear files in img_with_gt folder ready.')
 
-    base_path = 'procdataset'
+    base_path = 'procdataset'   # 'procdataset' 
     file_list = os.listdir(base_path)
     for i in file_list:
         if ('.txt' in i):

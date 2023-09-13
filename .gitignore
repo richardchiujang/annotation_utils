@@ -1,10 +1,11 @@
-temp/
-procdataset/
-preprocess_dataset
-labels/
 img_with_gt/
-
+labels/
+preprocess_dataset/
+procdataset/
+temp/
 *.zip
+
+
 
 
 
