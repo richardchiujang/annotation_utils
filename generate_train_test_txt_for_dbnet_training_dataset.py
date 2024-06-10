@@ -2,39 +2,50 @@ import glob
 import os, shutil
 import random
 
-jpgs = glob.glob(r'.\preprocess_dataset\datasets_mix\source\*.jpg')
+jpgs = glob.glob(r'.\procdataset\*.jpg')
 print(len(jpgs))
 # print(jpgs[:3])
 random.shuffle(jpgs)
 
-train_jpgs = jpgs[:int(len(jpgs)*0.6)]
-test_jpgs = jpgs[int(len(jpgs)*0.6):]
+spr = 0.90
+train_jpgs = jpgs[:int(len(jpgs) * spr)]
+test_jpgs = jpgs[int(len(jpgs) * spr):]
+
+try:
+    os.makedirs(r'.\datasets\train\img', exist_ok=True)
+    os.makedirs(r'.\datasets\train\gt', exist_ok=True)
+    os.makedirs(r'.\datasets\test\img', exist_ok=True)
+    os.makedirs(r'.\datasets\test\gt', exist_ok=True)
+except:
+    pass
 
 # '.\\preprocess_dataset\\datasets_mix\\source\\01_300_001.jpg' 
-with open(r'.\preprocess_dataset\datasets_mix\datasets\train.txt', 'w', encoding='utf-8') as f:
+with open(r'.\datasets\train.txt', 'w', encoding='utf-8') as f:
     for j in train_jpgs:
-        jpg = j.replace('.\\preprocess_dataset\\datasets_mix\\source\\', '.\\datasets\\train\\img\\') # 這是文件內的路徑
+        jpg = j.replace('.\\procdataset\\', '.\\datasets\\train\\img\\') # 這是文件內的路徑
         txt = jpg.replace('.jpg', '.txt').replace('img', 'gt') # 這是文件內的路徑
         xml = jpg.replace('.jpg', '.xml').replace('img', 'gt')
+        # print('processing:', j, txt)
         f.write(jpg + '\t' + txt + '\n')
-        shutil.move(j, '.\\preprocess_dataset\\datasets_mix\\' + jpg)
-        shutil.move(j.replace('.jpg', '.txt'), '.\\preprocess_dataset\\datasets_mix\\' + txt)
+        shutil.copy(j, jpg)
+        shutil.copy(j.replace('.jpg', '.txt'), txt)
         try:
-            shutil.move(j.replace('.jpg', '.xml'), '.\\preprocess_dataset\\datasets_mix\\' + xml)
+            shutil.copy(j.replace('.jpg', '.xml'), xml)
         except:
             pass
     f.close()
 
-with open(r'.\preprocess_dataset\datasets_mix\datasets\test.txt', 'w', encoding='utf-8') as f:
+with open(r'.\datasets\test.txt', 'w', encoding='utf-8') as f:
     for j in test_jpgs:
-        jpg = j.replace('.\\preprocess_dataset\\datasets_mix\\source\\', '.\\datasets\\test\\img\\') # 這是文件內的路徑
+        jpg = j.replace('.\\procdataset\\', '.\\datasets\\test\\img\\') # 這是文件內的路徑
         txt = jpg.replace('.jpg', '.txt').replace('img', 'gt') # 這是文件內的路徑
         xml = jpg.replace('.jpg', '.xml').replace('img', 'gt')
+        # print('processing:', j, txt)
         f.write(jpg + '\t' + txt + '\n')
-        shutil.move(j, '.\\preprocess_dataset\\datasets_mix\\' + jpg)
-        shutil.move(j.replace('.jpg', '.txt'), '.\\preprocess_dataset\\datasets_mix\\' + txt)
+        shutil.copy(j, jpg)
+        shutil.copy(j.replace('.jpg', '.txt'), txt)
         try:
-            shutil.move(j.replace('.jpg', '.xml'), '.\\preprocess_dataset\\datasets_mix\\' + xml)
+            shutil.copy(j.replace('.jpg', '.xml'), xml)
         except:
             pass
     f.close()

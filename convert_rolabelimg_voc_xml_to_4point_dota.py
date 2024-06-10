@@ -130,13 +130,15 @@ def voc_to_dota(xml_path, xml_name):
 
 
 if __name__ == '__main__':
-    files_path = 'procdataset'
+    # files_path = r'C:\develop\DBNet_pytorch_Wenmu_data\0_manual_prepare\short_and_less'
     # print(files_path)
     # # txt_file = 'test/presentation_032.txt'
     # roLabelImg2DOTA(files_path)
     # print('process {} to labels folder'.format(files_path))
 
-    root_path = 'procdataset'
+    # root_path = r'C:\develop\annotation_utils\target_300dpi\word_300dpi'
+    root_path = r'C:\develop\DBNet_pytorch_Wenmu_data\procdataset'
+    # root_path = r'C:\develop\annotation_utils\procdataset'
     # xml_file = 'TheWorldAhead2023pub20221209_114.xml'
     file_list = os.listdir(root_path)
     for i in file_list:

@@ -48,9 +48,7 @@ if __name__ == '__main__':
     """
     draw image ground truth
     for DBNet.pytorch 
-    繪製 (base_path) dataset\train or test 的 ground truth 放在此 ./img_with_gt 裡面供檢查label正確性
-    base_path = 'C:/applications/datasets/'  # dataset location 
-    list_file = 'train.txt'                  # list file location  程式從這裡 train.txt or test.txt 讀取內容(清單)
+    先將資料集放在 procdataset 資料夾下 同時放入圖像與標籤檔案
     program location C:\applications\annotation_tools\annotation_utils\
     output location  C:\applications\annotation_tools\annotation_utils\img_with_gt
     """
@@ -65,8 +63,9 @@ if __name__ == '__main__':
             os.remove(f)
         print('clear files in img_with_gt folder ready.')
 
-    base_path = 'procdataset'   # 'procdataset' 
+    base_path = r'procdataset'   # 'procdataset' 
     file_list = os.listdir(base_path)
+    n = 0
     for i in file_list:
         if ('.txt' in i):
             content = _load_txt(os.path.join(base_path, i))

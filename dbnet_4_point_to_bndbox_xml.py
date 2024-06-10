@@ -1,13 +1,13 @@
 '''
 使用順序
 1. 將欲標註樣本用 DBNet inference ( DBNet.pytorch/input > DBNet.pytorch/output/inference )
-2. 將 圖片樣本(jpg) + 剛剛預測的輸出(txt)，搬到 ./procdataset 下面並執行 dbnet_4_point_to_robndbox_cx_cy_w_h_angle_xml.py 
+2. 將 圖片樣本(jpg) + 剛剛預測的輸出(txt)，搬到 ./procdataset 下面並執行 dbnet_4_point_to_bndbox_xml.py 
 3. 同目錄下會產生 xml 檔案，打開 rolabelimg tool 將預測的標註修正成正確的
 4. 執行 convert_rolabelimg_xml_to_4point.py ，會將 xml 轉成 txt 位置在 ./labels 裡面
 5. 將 img_jpg + gt_txt (依自己分配)放到 C:\applications\datasets\(selfdata、selfdata_gt、selfdata_test、selfdata_gt_test)
 6. 這樣可以持續增加訓練樣本
 
-convert dbnet 4 point x1,y1,x2,y2,x3,y3,x4,y4,class txt file to rolabelimg xml format
+convert dbnet 4 point x1,y1,x2,y2,x3,y3,x4,y4,class txt file to rolabelimg bndbox xml format
 help(cacudegree_xml())
 help(euclideanDistance())
 因為要填入園圖像大小 ww,hh,dd 如 (1000,1200,3)，所以需要讀取圖像(jpg)來產生xml的資料
@@ -90,8 +90,8 @@ def polygonToRotRectangle_batch(bbox, with_module=False):
     ymin = np.min(normalized[:, 1, :], axis=1)
     ymax = np.max(normalized[:, 1, :], axis=1)
  
-    w = xmax - xmin + 3
-    h = ymax - ymin + 3
+    w = xmax - xmin
+    h = ymax - ymin
     # # 因為辨識結果字框偏小，所以稍微加大一點
     # if w > h: # 比較寬扁
     #     w = w*1.05
@@ -119,7 +119,7 @@ def polygonToRotRectangle_batch(bbox, with_module=False):
     else:
         angle = angle[:, np.newaxis]
     dboxes = np.concatenate((center[:, 0].astype(np.float64), center[:, 1].astype(np.float64), w, h, angle), axis=1)
-    return dboxes     
+    return dboxes, xmin, ymin, xmax, ymax    
 
 def fourp_gen_xml(txt_file):
     """
@@ -159,25 +159,26 @@ def fourp_gen_xml(txt_file):
         b = ET.SubElement(a, 'segmented').text = '0'    
 
         # =====================================
+        adj = 0
         for x1,y1,x2,y2,x3,y3,x4,y4,_ in rst: 
             # cx, cy = float((max(x1,x2,x3,x4)+min(x1,x2,x3,x4))/2), float((max(y1,y2,y3,y4)+min(y1,y2,y3,y4))/2)  # 計算中心點
             # w, h = float(euclideanDistance(x4,y4,x3,y3)), float(euclideanDistance(x2,y2,x3,y3))   # (x1,y1,x2,y2) 改成 (x4,y4,x3,y3)
             # angle = cacudegree_xml(x4,y4,x3,y3)
-            bbox = x1,y1,x2,y2,x3,y3,x4,y4
-            dboxes = polygonToRotRectangle_batch(bbox)
-            cx, cy, w, h, angle = dboxes[0]
+            xmin, ymin, xmax, ymax = x1, y1, x3, y3
+            # _, xmin, ymin, xmax, ymax  = polygonToRotRectangle_batch(bbox)
+            # cx, cy, w, h, angle = dboxes[0]
             b = ET.SubElement(a, 'object')
-            c = ET.SubElement(b, 'type').text = 'robndbox'
+            c = ET.SubElement(b, 'type').text = 'bndbox'
             c = ET.SubElement(b, 'name').text = 'words'
             c = ET.SubElement(b, 'pose').text = 'Unspecified'
             c = ET.SubElement(b, 'truncated').text = '0'
             c = ET.SubElement(b, 'difficult').text = '0'
-            c = ET.SubElement(b, 'robndbox')
-            d = ET.SubElement(c, 'cx').text = '%d' % cx
-            d = ET.SubElement(c, 'cy').text = '%d' % cy
-            d = ET.SubElement(c, 'w').text = '%d' % w
-            d = ET.SubElement(c, 'h').text = '%d' % h
-            d = ET.SubElement(c, 'angle').text = '%f' % angle
+            c = ET.SubElement(b, 'bndbox')
+            d = ET.SubElement(c, 'xmin').text = '%d' % max(xmin-adj,0)
+            d = ET.SubElement(c, 'ymin').text = '%d' % max(ymin-adj,0)
+            d = ET.SubElement(c, 'xmax').text = '%d' % int(xmax+adj)
+            d = ET.SubElement(c, 'ymax').text = '%d' % int(ymax+adj)
+            d = ET.SubElement(c, 'angle').text = '%f' % int(0)
 
         ### =============================================
         ET.indent(a, space='  ', level=0)
@@ -206,7 +207,7 @@ if __name__ == '__main__':
     再用 convert_rolabelimg_to_4point.py 產生新的 ./labels/filename.txt for DBNet ground truth txt files.
     再將 image & gt txt 分配到 dataset selfdata 的 train test 裡面 
     """
-    files_path = glob.glob('C:\\develop\\DBNet_pytorch_Wenmu_data\\datasets\\*.txt')
+    files_path = glob.glob('C:\\develop\\DBNet_pytorch_Wenmu_data\\procdataset\\*.txt')
     print(files_path)
     # txt_file = 'test/presentation_032.txt'
     for txt_file in files_path:

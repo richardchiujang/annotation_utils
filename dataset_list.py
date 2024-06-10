@@ -21,6 +21,7 @@ def gendataset(base_path, images_path, gt_path, prefix, mode, num=None):
     mode = {train; test}
     prefix like {ICDAR2015; TD500; }
     修改新增 shuffle 數量改成1個取樣數字(量)，不是原來的區間
+    
     """
     # basename = pathlib.Path('C:/applications/datasets')
     k = 0

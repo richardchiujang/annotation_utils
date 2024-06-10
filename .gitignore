@@ -4,7 +4,8 @@ preprocess_dataset/
 procdataset/
 temp/
 *.zip
-
+datasets/
+*.7z
 
 
 
