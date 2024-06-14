@@ -49,8 +49,8 @@ if __name__ == '__main__':
     draw image ground truth
     for DBNet.pytorch 
     先將資料集放在 procdataset 資料夾下 同時放入圖像與標籤檔案
-    program location C:\applications\annotation_tools\annotation_utils\
-    output location  C:\applications\annotation_tools\annotation_utils\img_with_gt
+    program location C:\annotation_utils\
+    output location  C:\annotation_utils\img_with_gt
     """
 
     try:

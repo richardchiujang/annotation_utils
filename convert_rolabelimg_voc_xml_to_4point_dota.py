@@ -136,8 +136,8 @@ if __name__ == '__main__':
     # roLabelImg2DOTA(files_path)
     # print('process {} to labels folder'.format(files_path))
 
-    # root_path = r'C:\develop\annotation_utils\target_300dpi\word_300dpi'
-    root_path = r'C:\develop\DBNet_pytorch_Wenmu_data\procdataset'
+
+    root_path = r'C:\develop\annotation_utils\procdataset'
     # root_path = r'C:\develop\annotation_utils\procdataset'
     # xml_file = 'TheWorldAhead2023pub20221209_114.xml'
     file_list = os.listdir(root_path)
